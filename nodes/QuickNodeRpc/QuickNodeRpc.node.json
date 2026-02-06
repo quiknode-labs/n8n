@@ -1,0 +1,22 @@
+{
+	"node": "n8n-nodes-base.quickNodeRpc",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": ["Development", "Finance"],
+	"resources": {
+		"credentialDocumentation": [
+			{
+				"url": "https://www.quicknode.com/docs"
+			}
+		],
+		"primaryDocumentation": [
+			{
+				"url": "https://www.quicknode.com/docs/ethereum"
+			}
+		]
+	},
+	"alias": ["blockchain", "ethereum", "web3", "rpc", "crypto", "quicknode"],
+	"subcategories": {
+		"Development": ["Blockchain"]
+	}
+}
