@@ -1,6 +1,6 @@
 # n8n-nodes-quicknode
 
-This is an n8n community node for interacting with blockchain networks via [QuickNode](https://www.quicknode.com/) RPC endpoints.
+This is an n8n community node for interacting with blockchain networks via [Quicknode](https://www.quicknode.com/) RPC endpoints.
 
 ## Features
 
@@ -37,7 +37,7 @@ npm install n8n-nodes-quicknode
 
 ## Prerequisites
 
-1. Create a [QuickNode account](https://www.quicknode.com/)
+1. Create a [Quicknode account](https://www.quicknode.com/)
 2. Create an endpoint for your desired network (Ethereum, Polygon, etc.)
 3. Copy your endpoint URL (it includes authentication)
 
@@ -46,8 +46,8 @@ npm install n8n-nodes-quicknode
 ### Credentials
 
 1. In n8n, go to **Credentials > New**
-2. Search for "QuickNode API"
-3. Enter your QuickNode endpoint URL
+2. Search for "Quicknode API"
+3. Enter your Quicknode endpoint URL
 4. Select your network (for reference only)
 
 Your endpoint URL should look like:
@@ -109,14 +109,14 @@ npm run format   # Format with Prettier
 
 ### Get ETH Balance
 
-1. Add the **QuickNode RPC** node
+1. Add the **Quicknode RPC** node
 2. Select **Get Balance** operation
 3. Enter an Ethereum address
 4. Execute to get balance in Wei and ETH
 
 ### Read Smart Contract
 
-1. Add the **QuickNode RPC** node
+1. Add the **Quicknode RPC** node
 2. Select **Call** operation
 3. Enter the contract address in "To Address"
 4. Enter the encoded function call in "Data"
@@ -124,7 +124,7 @@ npm run format   # Format with Prettier
 
 ### Custom RPC Method
 
-1. Add the **QuickNode RPC** node
+1. Add the **Quicknode RPC** node
 2. Select **Custom RPC** operation
 3. Enter the RPC method (e.g., `eth_getLogs`)
 4. Enter parameters as JSON array
@@ -132,7 +132,7 @@ npm run format   # Format with Prettier
 
 ## Supported Networks
 
-Any QuickNode-supported EVM network:
+Any Quicknode-supported EVM network:
 - Ethereum (Mainnet, Sepolia, Goerli)
 - Polygon (Mainnet, Mumbai)
 - Arbitrum One
@@ -157,6 +157,6 @@ MIT
 
 ## Resources
 
-- [QuickNode Documentation](https://www.quicknode.com/docs)
+- [Quicknode Documentation](https://www.quicknode.com/docs)
 - [Ethereum JSON-RPC Spec](https://ethereum.github.io/execution-apis/api-documentation/)
 - [n8n Community Nodes](https://docs.n8n.io/integrations/community-nodes/)

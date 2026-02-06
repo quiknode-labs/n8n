@@ -1,7 +1,7 @@
 {
   "name": "n8n-nodes-quicknode",
   "version": "0.1.0",
-  "description": "n8n node for QuickNode RPC integration",
+  "description": "n8n node for Quicknode RPC integration",
   "keywords": [
     "n8n-community-node-package",
     "quicknode",
@@ -35,10 +35,10 @@
   "n8n": {
     "n8nNodesApiVersion": 1,
     "credentials": [
-      "dist/credentials/QuickNodeApi.credentials.js"
+      "dist/credentials/QuicknodeApi.credentials.js"
     ],
     "nodes": [
-      "dist/nodes/QuickNodeRpc/QuickNodeRpc.node.js"
+      "dist/nodes/QuicknodeRpc/QuicknodeRpc.node.js"
     ]
   },
   "devDependencies": {

@@ -28,23 +28,23 @@ function toBlockTag(block: string): string {
 	return block;
 }
 
-export class QuickNodeRpc implements INodeType {
+export class QuicknodeRpc implements INodeType {
 	description: INodeTypeDescription = {
-		displayName: 'QuickNode RPC',
-		name: 'quickNodeRpc',
+		displayName: 'Quicknode RPC',
+		name: 'quicknodeRpc',
 		icon: 'file:quicknode.png',
 		group: ['transform'],
 		version: 1,
 		subtitle: '={{$parameter["operation"]}}',
-		description: 'Interact with blockchain via QuickNode RPC',
+		description: 'Interact with blockchain via Quicknode RPC',
 		defaults: {
-			name: 'QuickNode RPC',
+			name: 'Quicknode RPC',
 		},
 		inputs: ['main'],
 		outputs: ['main'],
 		credentials: [
 			{
-				name: 'quickNodeApi',
+				name: 'quicknodeApi',
 				required: true,
 			},
 		],
@@ -293,7 +293,7 @@ export class QuickNodeRpc implements INodeType {
 		const items = this.getInputData();
 		const returnData: INodeExecutionData[] = [];
 
-		const credentials = await this.getCredentials('quickNodeApi');
+		const credentials = await this.getCredentials('quicknodeApi');
 		const rpcEndpoint = credentials.rpcEndpoint as string;
 
 		if (!rpcEndpoint) {

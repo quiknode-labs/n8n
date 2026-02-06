@@ -4,9 +4,9 @@ import type {
 	INodeProperties,
 } from 'n8n-workflow';
 
-export class QuickNodeApi implements ICredentialType {
-	name = 'quickNodeApi';
-	displayName = 'QuickNode API';
+export class QuicknodeApi implements ICredentialType {
+	name = 'quicknodeApi';
+	displayName = 'Quicknode API';
 	documentationUrl = 'https://www.quicknode.com/docs';
 
 	properties: INodeProperties[] = [
@@ -16,7 +16,7 @@ export class QuickNodeApi implements ICredentialType {
 			type: 'string',
 			default: '',
 			placeholder: 'https://your-endpoint.quiknode.pro/your-token/',
-			description: 'Your QuickNode RPC endpoint URL (includes authentication token)',
+			description: 'Your Quicknode RPC endpoint URL (includes authentication token)',
 			required: true,
 		},
 		{
