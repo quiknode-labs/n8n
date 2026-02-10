@@ -1,5 +1,5 @@
 {
-  "name": "n8n-nodes-quicknode",
+  "name": "quicknode-n8n",
   "version": "0.1.0",
   "description": "n8n node for Quicknode RPC integration",
   "keywords": [
@@ -13,7 +13,7 @@
   "license": "MIT",
   "homepage": "https://github.com/quiknode-labs/n8n",
   "author": {
-    "name": "QuickNode Labs",
+    "name": "Quicknode",
     "email": "support@quicknode.com"
   },
   "repository": {
