@@ -1,5 +1,5 @@
 {
-  "name": "quicknode-n8n",
+  "name": "n8n-nodes-quicknode",
   "version": "0.1.1",
   "description": "n8n node for Quicknode RPC integration",
   "keywords": [
@@ -27,7 +27,8 @@
     "format": "prettier nodes credentials --write",
     "lint": "eslint nodes credentials package.json",
     "lintfix": "eslint nodes credentials package.json --fix",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "test": "npm run lint && npm run build"
   },
   "files": [
     "dist"

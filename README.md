@@ -1,4 +1,4 @@
-# quicknode-n8n
+# n8n-nodes-quicknode
 
 This is an n8n community node for interacting with blockchain networks via [Quicknode](https://www.quicknode.com/) RPC endpoints.
 
@@ -26,13 +26,13 @@ This is an n8n community node for interacting with blockchain networks via [Quic
 
 1. Go to **Settings > Community Nodes**
 2. Select **Install**
-3. Enter `quicknode-n8n` and confirm
+3. Enter `n8n-nodes-quicknode` and confirm
 
 ### Manual Installation
 
 ```bash
 cd ~/.n8n/nodes
-npm install quicknode-n8n
+npm install n8n-nodes-quicknode
 ```
 
 ## Prerequisites
@@ -79,7 +79,7 @@ npm link
 ```bash
 # In your n8n installation directory
 cd ~/.n8n
-npm link quicknode-n8n
+npm link n8n-nodes-quicknode
 
 # Start n8n
 n8n start
@@ -92,7 +92,7 @@ docker run -it --rm \
   --name n8n \
   -p 5678:5678 \
   -v ~/.n8n:/home/node/.n8n \
-  -v $(pwd):/home/node/.n8n/nodes/quicknode-n8n \
+  -v $(pwd):/home/node/.n8n/nodes/n8n-nodes-quicknode \
   n8nio/n8n
 ```
 
