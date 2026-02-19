@@ -14,6 +14,9 @@ export class QuicknodeApi implements ICredentialType {
 			displayName: 'RPC Endpoint URL',
 			name: 'rpcEndpoint',
 			type: 'string',
+			typeOptions: {
+				password: true,
+			},
 			default: '',
 			placeholder: 'https://your-endpoint.quiknode.pro/your-token/',
 			description: 'Your Quicknode RPC endpoint URL (includes authentication token)',
