@@ -42,6 +42,7 @@ export class QuicknodeRpc implements INodeType {
 		},
 		inputs: ['main'],
 		outputs: ['main'],
+		usableAsTool: true,
 		credentials: [
 			{
 				name: 'quicknodeApi',

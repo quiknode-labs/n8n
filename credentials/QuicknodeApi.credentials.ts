@@ -1,4 +1,5 @@
 import type {
+	IAuthenticateGeneric,
 	ICredentialTestRequest,
 	ICredentialType,
 	INodeProperties,
@@ -43,6 +44,11 @@ export class QuicknodeApi implements ICredentialType {
 			],
 		},
 	];
+
+	authenticate: IAuthenticateGeneric = {
+		type: 'generic',
+		properties: {},
+	};
 
 	// Test the credentials by calling a simple RPC method
 	test: ICredentialTestRequest = {

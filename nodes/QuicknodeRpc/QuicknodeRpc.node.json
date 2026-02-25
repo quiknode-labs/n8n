@@ -15,8 +15,5 @@
 			}
 		]
 	},
-	"alias": ["blockchain", "ethereum", "web3", "rpc", "crypto", "quicknode"],
-	"subcategories": {
-		"Development": ["Blockchain"]
-	}
+	"alias": ["blockchain", "ethereum", "web3", "rpc", "crypto", "quicknode"]
 }
