@@ -5,9 +5,9 @@ import type {
 	INodeProperties,
 } from 'n8n-workflow';
 
-export class QuicknodeApi implements ICredentialType {
-	name = 'quicknodeApi';
-	displayName = 'Quicknode API';
+export class QuicknodeEvmApi implements ICredentialType {
+	name = 'quicknodeEvmApi';
+	displayName = 'Quicknode EVM API';
 	documentationUrl = 'https://www.quicknode.com/docs';
 
 	properties: INodeProperties[] = [

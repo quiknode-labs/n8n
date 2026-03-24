@@ -45,7 +45,7 @@ export class QuicknodeRpc implements INodeType {
 		usableAsTool: true,
 		credentials: [
 			{
-				name: 'quicknodeApi',
+				name: 'quicknodeEvmApi',
 				required: true,
 			},
 		],
@@ -294,7 +294,7 @@ export class QuicknodeRpc implements INodeType {
 		const items = this.getInputData();
 		const returnData: INodeExecutionData[] = [];
 
-		const credentials = await this.getCredentials('quicknodeApi');
+		const credentials = await this.getCredentials('quicknodeEvmApi');
 		const rpcEndpoint = credentials.rpcEndpoint as string;
 
 		if (!rpcEndpoint) {
