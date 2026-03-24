@@ -41,9 +41,7 @@
       "dist/credentials/QuicknodeBitcoinApi.credentials.js"
     ],
     "nodes": [
-      "dist/nodes/QuicknodeRpc/QuicknodeRpc.node.js",
-      "dist/nodes/QuicknodeSolana/QuicknodeSolana.node.js",
-      "dist/nodes/QuicknodeBitcoin/QuicknodeBitcoin.node.js"
+      "dist/nodes/QuicknodeRpc/QuicknodeRpc.node.js"
     ]
   },
   "devDependencies": {
