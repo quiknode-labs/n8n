@@ -1,0 +1,19 @@
+{
+	"node": "n8n-nodes-base.quickNodeSolanaRpc",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": ["Development", "Finance"],
+	"resources": {
+		"credentialDocumentation": [
+			{
+				"url": "https://www.quicknode.com/docs/solana"
+			}
+		],
+		"primaryDocumentation": [
+			{
+				"url": "https://www.quicknode.com/docs/solana"
+			}
+		]
+	},
+	"alias": ["blockchain", "solana", "sol", "web3", "rpc", "crypto", "quicknode", "spl"]
+}
