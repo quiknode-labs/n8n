@@ -1,0 +1,19 @@
+{
+	"node": "n8n-nodes-base.quickNodeBitcoinRpc",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": ["Development", "Finance"],
+	"resources": {
+		"credentialDocumentation": [
+			{
+				"url": "https://www.quicknode.com/docs/bitcoin"
+			}
+		],
+		"primaryDocumentation": [
+			{
+				"url": "https://www.quicknode.com/docs/bitcoin"
+			}
+		]
+	},
+	"alias": ["blockchain", "bitcoin", "btc", "web3", "rpc", "crypto", "quicknode", "utxo"]
+}
