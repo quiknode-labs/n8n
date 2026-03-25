@@ -36,7 +36,7 @@
   "n8n": {
     "n8nNodesApiVersion": 1,
     "credentials": [
-      "dist/credentials/QuicknodeEvmApi.credentials.js",
+      "dist/credentials/QuicknodeApi.credentials.js",
       "dist/credentials/QuicknodeSolanaApi.credentials.js",
       "dist/credentials/QuicknodeBitcoinApi.credentials.js"
     ],

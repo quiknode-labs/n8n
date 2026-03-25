@@ -43,8 +43,9 @@ export class QuicknodeRpc implements INodeType {
 		name: 'quicknodeRpc',
 		icon: 'file:quicknode.png',
 		group: ['transform'],
-		version: 1,
-		subtitle: '={{$parameter["chain"] === "evm" ? $parameter["evmOperation"] : ($parameter["chain"] === "solana" ? $parameter["solanaOperation"] : $parameter["bitcoinOperation"])}}',
+		version: [1, 2],
+		defaultVersion: 2,
+		subtitle: '={{$parameter["chain"] === "evm" ? $parameter["operation"] : ($parameter["chain"] === "solana" ? $parameter["solanaOperation"] : $parameter["bitcoinOperation"])}}',
 		description: 'Interact with EVM, Solana, and Bitcoin blockchains via Quicknode RPC',
 		defaults: {
 			name: 'Quicknode RPC',
@@ -54,7 +55,7 @@ export class QuicknodeRpc implements INodeType {
 		usableAsTool: true,
 		credentials: [
 			{
-				name: 'quicknodeEvmApi',
+				name: 'quicknodeApi',
 				required: true,
 				displayOptions: { show: { chain: ['evm'] } },
 			},
@@ -93,7 +94,7 @@ export class QuicknodeRpc implements INodeType {
 			// ─────────────────────────────────────────────────────────────────
 			{
 				displayName: 'Operation',
-				name: 'evmOperation',
+				name: 'operation',
 				type: 'options',
 				noDataExpression: true,
 				displayOptions: { show: { chain: ['evm'] } },
@@ -114,105 +115,105 @@ export class QuicknodeRpc implements INodeType {
 			},
 			{
 				displayName: 'Address',
-				name: 'evmAddress',
+				name: 'address',
 				type: 'string',
 				default: '',
 				placeholder: '0x...',
 				description: 'The Ethereum address (42 characters starting with 0x)',
 				required: true,
-				displayOptions: { show: { chain: ['evm'], evmOperation: ['getBalance', 'getTransactionCount', 'getCode'] } },
+				displayOptions: { show: { chain: ['evm'], operation: ['getBalance', 'getTransactionCount', 'getCode'] } },
 			},
 			{
 				displayName: 'Block',
-				name: 'evmBlock',
+				name: 'block',
 				type: 'string',
 				default: 'latest',
 				placeholder: 'latest, earliest, pending, or block number',
 				description: 'Block number (decimal or hex) or tag: latest, earliest, pending, safe, finalized',
-				displayOptions: { show: { chain: ['evm'], evmOperation: ['getBalance', 'getTransactionCount', 'getCode', 'call'] } },
+				displayOptions: { show: { chain: ['evm'], operation: ['getBalance', 'getTransactionCount', 'getCode', 'call'] } },
 			},
 			{
 				displayName: 'Block Identifier',
-				name: 'evmBlockIdentifier',
+				name: 'blockIdentifier',
 				type: 'string',
 				default: 'latest',
 				placeholder: 'Block number, hash, or tag',
 				description: 'Block number (decimal or hex), block hash, or tag (latest, earliest, pending)',
 				required: true,
-				displayOptions: { show: { chain: ['evm'], evmOperation: ['getBlock'] } },
+				displayOptions: { show: { chain: ['evm'], operation: ['getBlock'] } },
 			},
 			{
 				displayName: 'Include Full Transactions',
-				name: 'evmFullTransactions',
+				name: 'fullTransactions',
 				type: 'boolean',
 				default: false,
 				description: 'Whether to return full transaction objects or just hashes',
-				displayOptions: { show: { chain: ['evm'], evmOperation: ['getBlock'] } },
+				displayOptions: { show: { chain: ['evm'], operation: ['getBlock'] } },
 			},
 			{
 				displayName: 'Transaction Hash',
-				name: 'evmTxHash',
+				name: 'txHash',
 				type: 'string',
 				default: '',
 				placeholder: '0x...',
 				description: 'The transaction hash (66 characters starting with 0x)',
 				required: true,
-				displayOptions: { show: { chain: ['evm'], evmOperation: ['getTransaction', 'getTransactionReceipt'] } },
+				displayOptions: { show: { chain: ['evm'], operation: ['getTransaction', 'getTransactionReceipt'] } },
 			},
 			{
 				displayName: 'From Address',
-				name: 'evmFrom',
+				name: 'from',
 				type: 'string',
 				default: '',
 				placeholder: '0x...',
 				description: 'The address the transaction is sent from',
-				displayOptions: { show: { chain: ['evm'], evmOperation: ['estimateGas', 'call'] } },
+				displayOptions: { show: { chain: ['evm'], operation: ['estimateGas', 'call'] } },
 			},
 			{
 				displayName: 'To Address',
-				name: 'evmTo',
+				name: 'to',
 				type: 'string',
 				default: '',
 				placeholder: '0x...',
 				description: 'The address the transaction is directed to',
 				required: true,
-				displayOptions: { show: { chain: ['evm'], evmOperation: ['estimateGas', 'call'] } },
+				displayOptions: { show: { chain: ['evm'], operation: ['estimateGas', 'call'] } },
 			},
 			{
 				displayName: 'Data',
-				name: 'evmData',
+				name: 'data',
 				type: 'string',
 				default: '',
 				placeholder: '0x...',
 				description: 'The encoded function call data',
-				displayOptions: { show: { chain: ['evm'], evmOperation: ['estimateGas', 'call'] } },
+				displayOptions: { show: { chain: ['evm'], operation: ['estimateGas', 'call'] } },
 			},
 			{
 				displayName: 'Value (Wei)',
-				name: 'evmValue',
+				name: 'value',
 				type: 'string',
 				default: '0',
 				description: 'The value to send in Wei (as decimal or hex)',
-				displayOptions: { show: { chain: ['evm'], evmOperation: ['estimateGas'] } },
+				displayOptions: { show: { chain: ['evm'], operation: ['estimateGas'] } },
 			},
 			{
 				displayName: 'RPC Method',
-				name: 'evmRpcMethod',
+				name: 'rpcMethod',
 				type: 'string',
 				default: '',
 				placeholder: 'eth_getBalance',
 				description: 'The JSON-RPC method name',
 				required: true,
-				displayOptions: { show: { chain: ['evm'], evmOperation: ['customRpc'] } },
+				displayOptions: { show: { chain: ['evm'], operation: ['customRpc'] } },
 			},
 			{
 				displayName: 'Parameters',
-				name: 'evmRpcParams',
+				name: 'rpcParams',
 				type: 'json',
 				default: '[]',
 				placeholder: '["0x...", "latest"]',
 				description: 'The parameters as a JSON array',
-				displayOptions: { show: { chain: ['evm'], evmOperation: ['customRpc'] } },
+				displayOptions: { show: { chain: ['evm'], operation: ['customRpc'] } },
 			},
 
 			// ─────────────────────────────────────────────────────────────────
@@ -515,22 +516,22 @@ export class QuicknodeRpc implements INodeType {
 
 		for (let i = 0; i < items.length; i++) {
 			try {
-				const chain = this.getNodeParameter('chain', i) as string;
+				const chain = this.getNodeParameter('chain', i, 'evm') as string;
 
 				// ── EVM ──────────────────────────────────────────────────────
 				if (chain === 'evm') {
-					const credentials = await this.getCredentials('quicknodeEvmApi');
+					const credentials = await this.getCredentials('quicknodeApi');
 					const rpcEndpoint = credentials.rpcEndpoint as string;
 					if (!rpcEndpoint) throw new NodeOperationError(this.getNode(), 'RPC endpoint is required in credentials');
 
-					const operation = this.getNodeParameter('evmOperation', i) as string;
+					const operation = this.getNodeParameter('operation', i) as string;
 					let method: string;
 					let params: unknown[] = [];
 
 					switch (operation) {
 						case 'getBalance': {
-							const address = this.getNodeParameter('evmAddress', i) as string;
-							const block = this.getNodeParameter('evmBlock', i, 'latest') as string;
+							const address = this.getNodeParameter('address', i) as string;
+							const block = this.getNodeParameter('block', i, 'latest') as string;
 							if (!isValidEvmAddress(address)) throw new NodeOperationError(this.getNode(), `Invalid Ethereum address: ${address}. Must be 42 characters starting with 0x`, { itemIndex: i });
 							method = 'eth_getBalance';
 							params = [address, toBlockTag(block)];
@@ -542,8 +543,8 @@ export class QuicknodeRpc implements INodeType {
 							break;
 						}
 						case 'getBlock': {
-							const blockIdentifier = this.getNodeParameter('evmBlockIdentifier', i) as string;
-							const fullTransactions = this.getNodeParameter('evmFullTransactions', i) as boolean;
+							const blockIdentifier = this.getNodeParameter('blockIdentifier', i) as string;
+							const fullTransactions = this.getNodeParameter('fullTransactions', i) as boolean;
 							if (/^0x[a-fA-F0-9]{64}$/.test(blockIdentifier)) {
 								method = 'eth_getBlockByHash';
 								params = [blockIdentifier, fullTransactions];
@@ -554,30 +555,30 @@ export class QuicknodeRpc implements INodeType {
 							break;
 						}
 						case 'getTransaction': {
-							const txHash = this.getNodeParameter('evmTxHash', i) as string;
+							const txHash = this.getNodeParameter('txHash', i) as string;
 							if (!isValidEvmTxHash(txHash)) throw new NodeOperationError(this.getNode(), `Invalid transaction hash: ${txHash}. Must be 66 characters starting with 0x`, { itemIndex: i });
 							method = 'eth_getTransactionByHash';
 							params = [txHash];
 							break;
 						}
 						case 'getTransactionReceipt': {
-							const txHash = this.getNodeParameter('evmTxHash', i) as string;
+							const txHash = this.getNodeParameter('txHash', i) as string;
 							if (!isValidEvmTxHash(txHash)) throw new NodeOperationError(this.getNode(), `Invalid transaction hash: ${txHash}. Must be 66 characters starting with 0x`, { itemIndex: i });
 							method = 'eth_getTransactionReceipt';
 							params = [txHash];
 							break;
 						}
 						case 'getTransactionCount': {
-							const address = this.getNodeParameter('evmAddress', i) as string;
-							const block = this.getNodeParameter('evmBlock', i, 'latest') as string;
+							const address = this.getNodeParameter('address', i) as string;
+							const block = this.getNodeParameter('block', i, 'latest') as string;
 							if (!isValidEvmAddress(address)) throw new NodeOperationError(this.getNode(), `Invalid Ethereum address: ${address}. Must be 42 characters starting with 0x`, { itemIndex: i });
 							method = 'eth_getTransactionCount';
 							params = [address, toBlockTag(block)];
 							break;
 						}
 						case 'getCode': {
-							const address = this.getNodeParameter('evmAddress', i) as string;
-							const block = this.getNodeParameter('evmBlock', i, 'latest') as string;
+							const address = this.getNodeParameter('address', i) as string;
+							const block = this.getNodeParameter('block', i, 'latest') as string;
 							if (!isValidEvmAddress(address)) throw new NodeOperationError(this.getNode(), `Invalid Ethereum address: ${address}. Must be 42 characters starting with 0x`, { itemIndex: i });
 							method = 'eth_getCode';
 							params = [address, toBlockTag(block)];
@@ -589,10 +590,10 @@ export class QuicknodeRpc implements INodeType {
 							break;
 						}
 						case 'estimateGas': {
-							const to = this.getNodeParameter('evmTo', i) as string;
-							const from = this.getNodeParameter('evmFrom', i, '') as string;
-							const data = this.getNodeParameter('evmData', i, '') as string;
-							const value = this.getNodeParameter('evmValue', i, '0') as string;
+							const to = this.getNodeParameter('to', i) as string;
+							const from = this.getNodeParameter('from', i, '') as string;
+							const data = this.getNodeParameter('data', i, '') as string;
+							const value = this.getNodeParameter('value', i, '0') as string;
 							if (!isValidEvmAddress(to)) throw new NodeOperationError(this.getNode(), `Invalid 'to' address: ${to}. Must be 42 characters starting with 0x`, { itemIndex: i });
 							if (from && !isValidEvmAddress(from)) throw new NodeOperationError(this.getNode(), `Invalid 'from' address: ${from}. Must be 42 characters starting with 0x`, { itemIndex: i });
 							if (data && !/^0x[a-fA-F0-9]*$/.test(data)) throw new NodeOperationError(this.getNode(), 'Invalid data: must be a 0x-prefixed hex string', { itemIndex: i });
@@ -605,10 +606,10 @@ export class QuicknodeRpc implements INodeType {
 							break;
 						}
 						case 'call': {
-							const to = this.getNodeParameter('evmTo', i) as string;
-							const from = this.getNodeParameter('evmFrom', i, '') as string;
-							const data = this.getNodeParameter('evmData', i, '') as string;
-							const block = this.getNodeParameter('evmBlock', i, 'latest') as string;
+							const to = this.getNodeParameter('to', i) as string;
+							const from = this.getNodeParameter('from', i, '') as string;
+							const data = this.getNodeParameter('data', i, '') as string;
+							const block = this.getNodeParameter('block', i, 'latest') as string;
 							if (!isValidEvmAddress(to)) throw new NodeOperationError(this.getNode(), `Invalid 'to' address: ${to}. Must be 42 characters starting with 0x`, { itemIndex: i });
 							if (from && !isValidEvmAddress(from)) throw new NodeOperationError(this.getNode(), `Invalid 'from' address: ${from}. Must be 42 characters starting with 0x`, { itemIndex: i });
 							if (data && !/^0x[a-fA-F0-9]*$/.test(data)) throw new NodeOperationError(this.getNode(), 'Invalid data: must be a 0x-prefixed hex string', { itemIndex: i });
@@ -620,8 +621,8 @@ export class QuicknodeRpc implements INodeType {
 							break;
 						}
 						case 'customRpc': {
-							method = this.getNodeParameter('evmRpcMethod', i) as string;
-							const paramsJson = this.getNodeParameter('evmRpcParams', i, '[]') as string;
+							method = this.getNodeParameter('rpcMethod', i) as string;
+							const paramsJson = this.getNodeParameter('rpcParams', i, '[]') as string;
 							try {
 								params = JSON.parse(paramsJson);
 								if (!Array.isArray(params)) throw new Error('Parameters must be a JSON array');
