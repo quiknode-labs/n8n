@@ -7,7 +7,7 @@ import type {
 
 export class QuicknodeApi implements ICredentialType {
 	name = 'quicknodeApi';
-	displayName = 'Quicknode API';
+	displayName = 'Quicknode EVM API';
 	documentationUrl = 'https://www.quicknode.com/docs';
 
 	properties: INodeProperties[] = [
