@@ -36,6 +36,32 @@ function isValid64CharHex(value: string): boolean {
 const isValidBitcoinTxid = isValid64CharHex;
 const isValidBitcoinBlockHash = isValid64CharHex;
 
+// ── Security helpers ──────────────────────────────────────────────────────────
+/**
+ * Enforces HTTPS on RPC endpoint URLs to prevent credential token exposure in transit.
+ * QuickNode embeds the auth token directly in the endpoint URL, so HTTP would
+ * transmit it in plain text.
+ */
+function validateRpcEndpoint(url: string, label: string): void {
+	let parsed: URL;
+	try {
+		parsed = new URL(url);
+	} catch {
+		throw new Error(`${label} is not a valid URL.`);
+	}
+	if (parsed.protocol !== 'https:') {
+		throw new Error(
+			`${label} must use HTTPS (received "${parsed.protocol}"). ` +
+			'HTTP endpoints expose your authentication token in transit.',
+		);
+	}
+}
+
+/** Validates that a string is non-empty standard base64 (alphabet + optional padding). */
+function isValidBase64(str: string): boolean {
+	return str.length > 0 && /^[A-Za-z0-9+/]+=*$/.test(str);
+}
+
 export class QuicknodeRpc implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Quicknode RPC',
@@ -99,7 +125,7 @@ export class QuicknodeRpc implements INodeType {
 				displayOptions: { show: { chain: ['evm'] } },
 				options: [
 					{ name: 'Call', value: 'call', description: 'Execute a read-only call', action: 'Execute read-only call' },
-					{ name: 'Custom RPC', value: 'customRpc', description: 'Execute a custom RPC method', action: 'Execute custom RPC method' },
+					{ name: 'Custom RPC', value: 'customRpc', description: 'Execute any JSON-RPC method directly. No input validation is applied — use only with trusted inputs.', action: 'Execute custom RPC method' },
 					{ name: 'Estimate Gas', value: 'estimateGas', description: 'Estimate gas for a transaction', action: 'Estimate gas for transaction' },
 					{ name: 'Get Balance', value: 'getBalance', description: 'Get the balance of an address', action: 'Get the balance of an address' },
 					{ name: 'Get Block', value: 'getBlock', description: 'Get block information by number or hash', action: 'Get block information' },
@@ -201,7 +227,7 @@ export class QuicknodeRpc implements INodeType {
 				type: 'string',
 				default: '',
 				placeholder: 'eth_getBalance',
-				description: 'The JSON-RPC method name',
+				description: 'The JSON-RPC method name. Passed directly to the node with no validation — only use with trusted, known method names.',
 				required: true,
 				displayOptions: { show: { chain: ['evm'], operation: ['customRpc'] } },
 			},
@@ -225,7 +251,7 @@ export class QuicknodeRpc implements INodeType {
 				noDataExpression: true,
 				displayOptions: { show: { chain: ['solana'] } },
 				options: [
-					{ name: 'Custom RPC', value: 'customRpc', description: 'Execute any Solana JSON-RPC method', action: 'Execute custom RPC method' },
+					{ name: 'Custom RPC', value: 'customRpc', description: 'Execute any Solana JSON-RPC method directly. No input validation is applied — use only with trusted inputs.', action: 'Execute custom RPC method' },
 					{ name: 'Get Account Info', value: 'getAccountInfo', description: 'Get all information associated with an account', action: 'Get account info' },
 					{ name: 'Get Balance', value: 'getBalance', description: 'Get the SOL balance of a wallet address', action: 'Get SOL balance of an address' },
 					{ name: 'Get Block', value: 'getBlock', description: 'Get block information by slot number', action: 'Get block by slot number' },
@@ -364,7 +390,7 @@ export class QuicknodeRpc implements INodeType {
 				type: 'string',
 				default: '',
 				placeholder: 'e.g. getBlockHeight',
-				description: 'The Solana JSON-RPC method name',
+				description: 'The Solana JSON-RPC method name. Passed directly to the node with no validation — only use with trusted, known method names.',
 				required: true,
 				displayOptions: { show: { chain: ['solana'], solanaOperation: ['customRpc'] } },
 			},
@@ -388,7 +414,7 @@ export class QuicknodeRpc implements INodeType {
 				noDataExpression: true,
 				displayOptions: { show: { chain: ['bitcoin'] } },
 				options: [
-					{ name: 'Custom RPC', value: 'customRpc', description: 'Execute any Bitcoin JSON-RPC method', action: 'Execute custom RPC method' },
+					{ name: 'Custom RPC', value: 'customRpc', description: 'Execute any Bitcoin JSON-RPC method directly. No input validation is applied — use only with trusted inputs.', action: 'Execute custom RPC method' },
 					{ name: 'Estimate Smart Fee', value: 'estimateSmartFee', description: 'Estimate the fee rate for a transaction to confirm within N blocks', action: 'Estimate smart fee' },
 					{ name: 'Get Block', value: 'getBlock', description: 'Get block data by hash', action: 'Get block by hash' },
 					{ name: 'Get Block Count', value: 'getBlockCount', description: 'Get the current block height', action: 'Get current block height' },
@@ -505,7 +531,7 @@ export class QuicknodeRpc implements INodeType {
 				type: 'string',
 				default: '',
 				placeholder: 'e.g. getnetworkinfo',
-				description: 'The Bitcoin JSON-RPC method name',
+				description: 'The Bitcoin JSON-RPC method name. Passed directly to the node with no validation — only use with trusted, known method names.',
 				required: true,
 				displayOptions: { show: { chain: ['bitcoin'], bitcoinOperation: ['customRpc'] } },
 			},
@@ -534,6 +560,7 @@ export class QuicknodeRpc implements INodeType {
 					const credentials = await this.getCredentials('quicknodeApi');
 					const rpcEndpoint = credentials.rpcEndpoint as string;
 					if (!rpcEndpoint) throw new NodeOperationError(this.getNode(), 'RPC endpoint is required in credentials');
+					try { validateRpcEndpoint(rpcEndpoint, 'EVM RPC endpoint'); } catch (e) { throw new NodeOperationError(this.getNode(), (e as Error).message, { itemIndex: i }); }
 
 					const operation = this.getNodeParameter('operation', i) as string;
 					let method: string;
@@ -556,7 +583,7 @@ export class QuicknodeRpc implements INodeType {
 						case 'getBlock': {
 							const blockIdentifier = this.getNodeParameter('blockIdentifier', i) as string;
 							const fullTransactions = this.getNodeParameter('fullTransactions', i) as boolean;
-							if (/^0x[a-fA-F0-9]{64}$/.test(blockIdentifier)) {
+							if (isValidEvmTxHash(blockIdentifier)) {
 								method = 'eth_getBlockByHash';
 								params = [blockIdentifier, fullTransactions];
 							} else {
@@ -607,7 +634,7 @@ export class QuicknodeRpc implements INodeType {
 							const value = this.getNodeParameter('value', i, '0') as string;
 							if (!isValidEvmAddress(to)) throw new NodeOperationError(this.getNode(), `Invalid 'to' address: ${to}. Must be 42 characters starting with 0x`, { itemIndex: i });
 							if (from && !isValidEvmAddress(from)) throw new NodeOperationError(this.getNode(), `Invalid 'from' address: ${from}. Must be 42 characters starting with 0x`, { itemIndex: i });
-							if (data && !/^0x[a-fA-F0-9]*$/.test(data)) throw new NodeOperationError(this.getNode(), 'Invalid data: must be a 0x-prefixed hex string', { itemIndex: i });
+							if (data && !/^0x([a-fA-F0-9]{2})*$/.test(data)) throw new NodeOperationError(this.getNode(), 'Invalid data: must be a 0x-prefixed hex string with an even number of hex digits', { itemIndex: i });
 							const txObject: IDataObject = { to };
 							if (from) txObject.from = from;
 							if (data) txObject.data = data;
@@ -623,7 +650,7 @@ export class QuicknodeRpc implements INodeType {
 							const block = this.getNodeParameter('block', i, 'latest') as string;
 							if (!isValidEvmAddress(to)) throw new NodeOperationError(this.getNode(), `Invalid 'to' address: ${to}. Must be 42 characters starting with 0x`, { itemIndex: i });
 							if (from && !isValidEvmAddress(from)) throw new NodeOperationError(this.getNode(), `Invalid 'from' address: ${from}. Must be 42 characters starting with 0x`, { itemIndex: i });
-							if (data && !/^0x[a-fA-F0-9]*$/.test(data)) throw new NodeOperationError(this.getNode(), 'Invalid data: must be a 0x-prefixed hex string', { itemIndex: i });
+							if (data && !/^0x([a-fA-F0-9]{2})*$/.test(data)) throw new NodeOperationError(this.getNode(), 'Invalid data: must be a 0x-prefixed hex string with an even number of hex digits', { itemIndex: i });
 							const txObject: IDataObject = { to };
 							if (from) txObject.from = from;
 							if (data) txObject.data = data;
@@ -661,17 +688,25 @@ export class QuicknodeRpc implements INodeType {
 					const resultData: IDataObject = { result: response.result, method, network: credentials.network, chain: 'evm' };
 
 					if (operation === 'getBalance' && response.result) {
-						const weiValue = BigInt(response.result);
-						resultData.balanceWei = weiValue.toString();
-						resultData.balanceEth = (Number(weiValue) / 1e18).toFixed(18);
+						try {
+							const weiValue = BigInt(response.result);
+							resultData.balanceWei = weiValue.toString();
+							const whole = weiValue / BigInt('1000000000000000000');
+							const frac = weiValue % BigInt('1000000000000000000');
+							resultData.balanceEth = `${whole}.${frac.toString().padStart(18, '0')}`;
+						} catch { /* malformed result — raw result still returned */ }
 					}
 					if (operation === 'getBlockNumber' && response.result) {
 						resultData.blockNumberDecimal = parseInt(response.result, 16);
 					}
 					if (operation === 'getGasPrice' && response.result) {
-						const gasPriceWei = BigInt(response.result);
-						resultData.gasPriceWei = gasPriceWei.toString();
-						resultData.gasPriceGwei = (Number(gasPriceWei) / 1e9).toFixed(9);
+						try {
+							const gasPriceWei = BigInt(response.result);
+							resultData.gasPriceWei = gasPriceWei.toString();
+							const whole = gasPriceWei / BigInt('1000000000');
+							const frac = gasPriceWei % BigInt('1000000000');
+							resultData.gasPriceGwei = `${whole}.${frac.toString().padStart(9, '0')}`;
+						} catch { /* malformed result — raw result still returned */ }
 					}
 					if (operation === 'getTransactionCount' && response.result) {
 						resultData.transactionCountDecimal = parseInt(response.result, 16);
@@ -687,6 +722,7 @@ export class QuicknodeRpc implements INodeType {
 					const credentials = await this.getCredentials('quicknodeSolanaApi');
 					const rpcEndpoint = credentials.rpcEndpoint as string;
 					if (!rpcEndpoint) throw new NodeOperationError(this.getNode(), 'RPC endpoint is required in credentials');
+					try { validateRpcEndpoint(rpcEndpoint, 'Solana RPC endpoint'); } catch (e) { throw new NodeOperationError(this.getNode(), (e as Error).message, { itemIndex: i }); }
 
 					const operation = this.getNodeParameter('solanaOperation', i) as string;
 					let method: string;
@@ -755,6 +791,7 @@ export class QuicknodeRpc implements INodeType {
 						}
 						case 'sendTransaction': {
 							const signedTransaction = this.getNodeParameter('solanaSignedTransaction', i) as string;
+							if (!isValidBase64(signedTransaction)) throw new NodeOperationError(this.getNode(), 'Invalid signed transaction: must be a non-empty base64-encoded string.', { itemIndex: i });
 							const skipPreflight = this.getNodeParameter('solanaSkipPreflight', i, false) as boolean;
 							method = 'sendTransaction';
 							params = [signedTransaction, { encoding: 'base64', skipPreflight }];
@@ -792,7 +829,10 @@ export class QuicknodeRpc implements INodeType {
 					if (operation === 'getBalance' && response.result !== null && response.result !== undefined) {
 						const lamports = (response.result as IDataObject).value as number;
 						resultData.balanceLamports = lamports;
-						resultData.balanceSol = (lamports / 1e9).toFixed(9);
+						const lamportsBig = BigInt(lamports);
+						const whole = lamportsBig / BigInt('1000000000');
+						const frac = lamportsBig % BigInt('1000000000');
+						resultData.balanceSol = `${whole}.${frac.toString().padStart(9, '0')}`;
 					}
 					if (operation === 'getSlot' && response.result !== null && response.result !== undefined) {
 						resultData.slot = response.result;
@@ -805,6 +845,7 @@ export class QuicknodeRpc implements INodeType {
 					const credentials = await this.getCredentials('quicknodeBitcoinApi');
 					const rpcEndpoint = credentials.rpcEndpoint as string;
 					if (!rpcEndpoint) throw new NodeOperationError(this.getNode(), 'RPC endpoint is required in credentials');
+					try { validateRpcEndpoint(rpcEndpoint, 'Bitcoin RPC endpoint'); } catch (e) { throw new NodeOperationError(this.getNode(), (e as Error).message, { itemIndex: i }); }
 
 					const operation = this.getNodeParameter('bitcoinOperation', i) as string;
 					let method: string;
