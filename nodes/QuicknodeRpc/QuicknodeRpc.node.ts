@@ -30,12 +30,11 @@ function isValidSolanaSignature(sig: string): boolean {
 }
 
 // ── Bitcoin helpers ───────────────────────────────────────────────────────────
-function isValidBitcoinTxid(txid: string): boolean {
-	return /^[a-fA-F0-9]{64}$/.test(txid);
+function isValid64CharHex(value: string): boolean {
+	return /^[a-fA-F0-9]{64}$/.test(value);
 }
-function isValidBitcoinBlockHash(hash: string): boolean {
-	return /^[a-fA-F0-9]{64}$/.test(hash);
-}
+const isValidBitcoinTxid = isValid64CharHex;
+const isValidBitcoinBlockHash = isValid64CharHex;
 
 export class QuicknodeRpc implements INodeType {
 	description: INodeTypeDescription = {
