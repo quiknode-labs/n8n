@@ -55,5 +55,16 @@
   },
   "peerDependencies": {
     "n8n-workflow": "*"
+  },
+  "pnpm": {
+    "overrides": {
+      "form-data": ">=4.0.4",
+      "flatted": ">=3.4.2",
+      "lodash": ">=4.17.23",
+      "ajv": "^6.14.0",
+      "minimatch@3": "^3.1.4",
+      "braces@2": "^3.0.3",
+      "micromatch@3": "^4.0.8"
+    }
   }
 }
