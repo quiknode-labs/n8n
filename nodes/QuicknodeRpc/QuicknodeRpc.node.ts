@@ -260,7 +260,19 @@ export class QuicknodeRpc implements INodeType {
 				],
 				default: 'finalized',
 				description: 'The commitment level for the query',
-				displayOptions: { show: { chain: ['solana'], solanaOperation: ['getBalance', 'getAccountInfo', 'getSlot', 'getBlock', 'getTransaction'] } },
+				displayOptions: { show: { chain: ['solana'], solanaOperation: ['getBalance', 'getAccountInfo', 'getSlot'] } },
+			},
+			{
+				displayName: 'Commitment',
+				name: 'solanaBlockTxCommitment',
+				type: 'options',
+				options: [
+					{ name: 'Finalized', value: 'finalized' },
+					{ name: 'Confirmed', value: 'confirmed' },
+				],
+				default: 'finalized',
+				description: 'The commitment level. Solana does not support "processed" for getBlock or getTransaction',
+				displayOptions: { show: { chain: ['solana'], solanaOperation: ['getBlock', 'getTransaction'] } },
 			},
 			{
 				displayName: 'Encoding',
@@ -701,7 +713,7 @@ export class QuicknodeRpc implements INodeType {
 						}
 						case 'getTransaction': {
 							const signature = this.getNodeParameter('solanaSignature', i) as string;
-							const commitment = this.getNodeParameter('solanaCommitment', i, 'finalized') as string;
+							const commitment = this.getNodeParameter('solanaBlockTxCommitment', i, 'finalized') as string;
 							if (!isValidSolanaSignature(signature)) throw new NodeOperationError(this.getNode(), `Invalid transaction signature: ${signature}. Must be a base58-encoded signature (~88 characters).`, { itemIndex: i });
 							method = 'getTransaction';
 							params = [signature, { commitment, encoding: 'jsonParsed', maxSupportedTransactionVersion: 0 }];
@@ -715,7 +727,7 @@ export class QuicknodeRpc implements INodeType {
 						}
 						case 'getBlock': {
 							const slot = this.getNodeParameter('solanaSlot', i) as number;
-							const commitment = this.getNodeParameter('solanaCommitment', i, 'finalized') as string;
+							const commitment = this.getNodeParameter('solanaBlockTxCommitment', i, 'finalized') as string;
 							const transactionDetails = this.getNodeParameter('solanaTransactionDetails', i, 'signatures') as string;
 							if (!Number.isInteger(slot) || slot < 0) throw new NodeOperationError(this.getNode(), `Invalid slot: ${slot}. Must be a non-negative integer.`, { itemIndex: i });
 							method = 'getBlock';
